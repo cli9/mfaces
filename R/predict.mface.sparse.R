@@ -48,7 +48,7 @@ predict.mface.sparse <- function(object,newdata,
   Bi_pred <- unlist(Bi_pred)
   B <- do.call(bdiag, B) 
   uscores.pred <- unlist(uscores.pred)
-  cov.pred <- matrix(0,length(unlist(mu.pred)),length(unlist(mu.pred)))
+  # cov.pred <- matrix(0,length(unlist(mu.pred)),length(unlist(mu.pred)))
   
   scores = list(subj=subj_unique.pred,
                 scores = matrix(NA,nrow=length(subj_unique.pred),ncol=npc),
@@ -120,18 +120,18 @@ predict.mface.sparse <- function(object,newdata,
         }
       }
       temp = as.matrix(B3i.pred%*%tcrossprod(Theta,B3i))
-      idx_1 = lapply(sel.pred, function(x){x[1]-1})
-      idx_n = lapply(sel.pred, function(x){x[length(x)]})
-      idx = (sum(unlist(idx_1))+1):sum(unlist(idx_n))
+      # idx_1 = lapply(sel.pred, function(x){x[1]-1})
+      # idx_n = lapply(sel.pred, function(x){x[length(x)]})
+      # idx = (sum(unlist(idx_1))+1):sum(unlist(idx_n))
       for(j in 1:p){
         y.pred[[j]][sel.pred[[j]]] <- temp0[ind_temp[[j]]]
-        if(sum(len_sel.pred.obs) >1){
-          cov.pred[idx,idx] = Vi.pred - temp%*%Vi.inv%*%t(temp)
+        if(sum(len_sel.pred.obs) > 1){
+          # cov.pred[idx,idx] = Vi.pred - temp%*%Vi.inv%*%t(temp)
           se.pred[[j]][sel.pred[[j]]] = sqrt(diag(Vi.pred - temp%*%Vi.inv%*%t(temp)))[ind_temp[[j]]]
         }
         
-        if(sum(len_sel.pred.obs) ==1){
-          cov.pred[idx,idx] = Vi.pred[1,1] - Vi.inv[1,1]*temp%*%t(temp)
+        if(sum(len_sel.pred.obs) == 1){
+          # cov.pred[idx,idx] = Vi.pred[1,1] - Vi.inv[1,1]*temp%*%t(temp)
           se.pred[[j]][sel.pred[[j]]] = sqrt(Vi.pred[1,1] - Vi.inv[1,1]*temp%*%t(temp))
         }
       }
@@ -151,7 +151,8 @@ predict.mface.sparse <- function(object,newdata,
   
   return(list(object=object,newdata=newdata,B=B,
               y.pred = y.pred,mu.pred=mu.pred,var.error.pred=var.error.pred,
-              rand_eff = scores, cov.pred = cov.pred,
+              rand_eff = scores, 
+              # cov.pred = cov.pred,
               se.pred = se.pred, uscores.pred = uscores.pred,
               Chat.diag.pred = diag(Chat.pred),
               ucov.pred = ucov.pred, uy.pred = uy.pred))  

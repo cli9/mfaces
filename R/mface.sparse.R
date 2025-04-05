@@ -284,7 +284,7 @@ mface.sparse <- function(data, newdata = NULL, center = TRUE, argvals.new = NULL
      }
    }
    
-   Chat.diag.pred = diag(as.matrix(tcrossprod(B%*%Matrix(Theta_all),B)))
+   Chat.diag.pred = diag(as.matrix(tcrossprod(B%*%Matrix(Theta_all), B)))
    
  }
  if(is.null(newdata)){

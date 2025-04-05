@@ -21,7 +21,8 @@ predict.face.sparse.inner <- function(object,newdata,calculate.scores=T,...){
   
   mu.pred <- rep(0,nrow(newdata))
   var.error.pred <- rep(max(sigma2,0.000001),nrow(newdata))
-  cov.pred <-  matrix(0,length(mu.pred),length(mu.pred))
+  # cov.pred <-  matrix(0,length(mu.pred),length(mu.pred))
+  se.pred <- rep(0, nrow(newdata))
     
   if(center) {mu.pred <- predict(fit_mean,newdata$argvals) }
   #if(!const.var.error){
@@ -82,11 +83,11 @@ predict.face.sparse.inner <- function(object,newdata,calculate.scores=T,...){
       scores$u[i,] = as.vector(ui)
       y.pred[sel.pred] = as.numeric(Hi%*%y.predi[sel.pred.obs]) + mu.predi
       temp = as.matrix(B3i.pred%*%tcrossprod(Theta,B3i))
-      if(length(sel.pred.obs) >1){
-        cov.pred[sel.pred,sel.pred] = Vi.pred - temp%*%Vi.inv%*%t(temp)
+      if(length(sel.pred.obs) > 1){
+        se.pred[sel.pred] = sqrt(diag(Vi.pred - temp%*%Vi.inv%*%t(temp)))
       }
-      if(length(sel.pred.obs) ==1){
-        cov.pred[sel.pred,sel.pred] = Vi.pred - Vi.inv[1,1]*temp%*%t(temp)
+      if(length(sel.pred.obs) == 1){
+        se.pred[sel.pred] = sqrt(Vi.pred[1, 1] - Vi.inv[1, 1]*temp%*%t(temp))
       }
       ## predict scores
       if(object$calculate.scores==TRUE || calculate.scores==TRUE){ 
@@ -97,13 +98,17 @@ predict.face.sparse.inner <- function(object,newdata,calculate.scores=T,...){
     }
   }
   
-  B = spline.des(knots=knots, x=newdata$argvals, ord = p+1,outer.ok = TRUE,sparse=TRUE)$design
+  B = spline.des(knots=knots, 
+                 x=newdata[!is.na(newdata$y), 'argvals']
+                 ord = p+1,outer.ok = TRUE,sparse=TRUE)$design
   Chat.pred = as.matrix(tcrossprod(B%*%Matrix(Theta),B))
   P = Matrix(h(newdata$argvals))  # <---
   
   return(list(object=object,newdata=newdata,y.pred = y.pred,
               mu.pred=mu.pred,var.error.pred=var.error.pred,
-              rand_eff = scores, cov.pred = cov.pred, se.pred = sqrt(diag(cov.pred)),
+              rand_eff = scores, 
+              # cov.pred = cov.pred, 
+              se.pred = se.pred,
               Chat.pred = Chat.pred,Chat.diag.pred = diag(Chat.pred), 
               Bi = Bi, Bi_pred = Bi_pred, B = B, 
               Pi = Pi, Pi_pred = Pi_pred, P = P))  
