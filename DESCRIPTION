@@ -1,7 +1,7 @@
 Package: mfaces
 Title: Fast Covariance Estimation for Multivariate Sparse Functional Data
-Version: 0.1-4
-Date: 2022-07-18
+Version: 0.1-5
+Date: 2025-04-05
 Author: Cai Li [aut,cre] and Luo Xiao [aut]
 Maintainer: Cai Li <cai.li.stats@gmail.com>
 Description: Multivariate functional principal component analysis via fast covariance estimation for
