@@ -99,7 +99,7 @@ predict.face.sparse.inner <- function(object,newdata,calculate.scores=T,...){
   }
   
   B = spline.des(knots=knots, 
-                 x=newdata[!is.na(newdata$y), 'argvals']
+                 x=newdata[!is.na(newdata$y), 'argvals'],
                  ord = p+1,outer.ok = TRUE,sparse=TRUE)$design
   Chat.pred = as.matrix(tcrossprod(B%*%Matrix(Theta),B))
   P = Matrix(h(newdata$argvals))  # <---
